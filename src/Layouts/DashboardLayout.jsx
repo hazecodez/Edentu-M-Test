@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 export default function DashboardLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
-
+  //func for check the active page
   const isActive = (path) => location.pathname === path;
-
+  //func for button to open/close sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

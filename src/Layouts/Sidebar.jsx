@@ -20,6 +20,7 @@ const Sidebar = ({ isOpen, toggleSidebar, isActive }) => {
         <FaTimes className="w-6 h-6 text-gray-600  shadow-lg rounded-full hover:text-black transition-colors duration-500" />
       </button>
       <ul className="space-y-6 mt-10">
+        <hr />
         <li
           onClick={() => navigate("/")}
           className={`flex gap-6 cursor-pointer ${isActive("/") ? "bg-gray-200 text-black" : ""} hover:bg-gray-200 p-2 rounded-md hover:text-black transition-colors duration-500`}
