@@ -1,13 +1,11 @@
 import DashboardLayout from "../Layouts/DashboardLayout";
 
 export default function UserList() {
-
-
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold">User List</h1>
-      <p>Here is a table of users...</p>
-      {/* Add your table or user listing component here */}
+      <div className="md:pl-72 xl:pl-72">
+        <h1 className="text-2xl font-bold">Users List</h1>
+      </div>
     </DashboardLayout>
   );
 }
