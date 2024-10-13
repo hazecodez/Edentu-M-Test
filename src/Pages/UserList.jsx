@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import axios from "axios";
+import { BeatLoader } from "react-spinners";
 
 const axiosInstance = axios.create({
   baseURL: "https://jsonplaceholder.typicode.com",
@@ -8,19 +9,39 @@ const axiosInstance = axios.create({
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
       const response = await axiosInstance.get("/users");
       if (response.data) {
-        setUsers(response.data);
+        //no need this timeout actually but for showing the loader one second.
+        setTimeout(() => {
+          setUsers(response.data);
+          setLoading(false);
+        }, 1000);
       }
     };
     fetchUsers();
   }, []);
   return (
     <DashboardLayout>
-      <div className="md:pl-72 xl:pl-72">
-        <h1 className="text-2xl font-bold">Users List</h1>
+      {loading && (
+        <div className="absolute left-56 inset-0 flex items-center justify-center z-10">
+          <BeatLoader loading={loading} size={30} />
+        </div>
+      )}
+      <div className="xl:pl-72">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold">Users List</h1>
+          <button
+            className="border rounded-md transition-colors duration-500 w-32 bg-gray-200 hover:bg-white"
+            onClick={() => console.log("hello")}
+          >
+            Download
+          </button>
+        </div>
+
         <div className="flex flex-col">
           <div className="-m-1.5 overflow-x-auto">
             <div className="p-1.5 min-w-full inline-block align-middle">

@@ -10,11 +10,11 @@ const Sidebar = ({ isOpen, toggleSidebar, isActive }) => {
     <div
       className={`fixed inset-0 bg-[#f0eee4] text-gray-600 shadow-lg w-64 p-6 transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 transition-transform duration-300 ease-in-out z-50`}
+      } xl:translate-x-0 transition-transform duration-300 ease-in-out z-50`}
     >
       {/* Close button for mobile */}
       <button
-        className="absolute top-4 right-4 md:hidden"
+        className="absolute top-4 right-4 xl:hidden"
         onClick={toggleSidebar}
       >
         <FaTimes className="w-6 h-6 text-gray-600  shadow-lg rounded-full hover:text-black transition-colors duration-500" />
@@ -23,7 +23,9 @@ const Sidebar = ({ isOpen, toggleSidebar, isActive }) => {
         <hr />
         <li
           onClick={() => navigate("/")}
-          className={`flex gap-6 cursor-pointer ${isActive("/") ? "bg-gray-200 text-black" : ""} hover:bg-gray-200 p-2 rounded-md hover:text-black transition-colors duration-500`}
+          className={`flex gap-6 cursor-pointer ${
+            isActive("/") ? "bg-gray-200 text-black" : ""
+          } hover:bg-gray-200 p-2 rounded-md hover:text-black transition-colors duration-500`}
         >
           <GoHomeFill className="text-2xl " />
           <a className="block ">Users</a>
@@ -31,7 +33,9 @@ const Sidebar = ({ isOpen, toggleSidebar, isActive }) => {
         <hr />
         <li
           onClick={() => navigate("/weather")}
-          className={`flex gap-6 cursor-pointer ${isActive("/weather") ? "bg-gray-200 text-black" : ""} hover:bg-gray-200 p-2 rounded-md hover:text-black transition-colors duration-500`}
+          className={`flex gap-6 cursor-pointer ${
+            isActive("/weather") ? "bg-gray-200 text-black" : ""
+          } hover:bg-gray-200 p-2 rounded-md hover:text-black transition-colors duration-500`}
         >
           <TiWeatherPartlySunny className="text-2xl " />
           <a className="block ">Weather</a>
