@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import axios from "axios";
 import { BeatLoader } from "react-spinners";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+//import UserListPdf from "../Components/UserListPdf";
 
 const axiosInstance = axios.create({
   baseURL: "https://jsonplaceholder.typicode.com",
@@ -10,20 +13,51 @@ const axiosInstance = axios.create({
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const componentRef = useRef(null);
+
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
-      const response = await axiosInstance.get("/users");
-      if (response.data) {
-        //no need this timeout actually but for showing the loader one second.
-        setTimeout(() => {
-          setUsers(response.data);
-          setLoading(false);
-        }, 1000);
+      try {
+        const response = await axiosInstance.get("/users");
+        if (response.data) {
+          //no need this timeout actually but for showing the loader one second.
+          setTimeout(() => {
+            setUsers(response.data);
+            setLoading(false);
+          }, 1000);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setLoading(false);
       }
     };
     fetchUsers();
   }, []);
+
+  const handleGeneratePDF = async () => {
+    const inputData = componentRef.current;
+    try {
+      const canvas = await html2canvas(inputData);
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: "a4",
+      });
+
+      const width = pdf.internal.pageSize.getWidth();
+      const height = (canvas.height * width) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, width, height);
+      pdf.save("Users_List.pdf");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <DashboardLayout>
       {loading && (
@@ -35,8 +69,8 @@ export default function UserList() {
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Users List</h1>
           <button
+            onClick={handleGeneratePDF}
             className="border rounded-md transition-colors duration-500 w-32 bg-gray-200 hover:bg-white"
-            onClick={() => console.log("hello")}
           >
             Download
           </button>
@@ -46,7 +80,7 @@ export default function UserList() {
           <div className="-m-1.5 overflow-x-auto">
             <div className="p-1.5 min-w-full inline-block align-middle">
               <div className="overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table ref={componentRef} className="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
                       <th
@@ -63,13 +97,13 @@ export default function UserList() {
                       </th>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                        className="hidden sm:table-cell px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
                       >
                         User Name
                       </th>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                        className="hidden lg:table-cell px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
                       >
                         Email
                       </th>
@@ -93,11 +127,21 @@ export default function UserList() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                             {data.name}
+                            <dl className="lg:hidden">
+                              <dt className="sr-only sm:hidden ">User Name</dt>
+                              <dd className="sm:hidden text-gray-500 font-normal mt-1">
+                                {data.username}
+                              </dd>
+                              <dt className="sr-only">Email</dt>
+                              <dd className="text-gray-500 font-normal mt-1">
+                                {data.email}
+                              </dd>
+                            </dl>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                             {data.username}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                             {data.email}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
