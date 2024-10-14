@@ -22,7 +22,6 @@ export default function DashboardLayout({ children }) {
         isActive={isActive}
       />
 
-      {/* Main content area */}
       <div className="flex-1">
         {/* Navbar */}
         <Navbar

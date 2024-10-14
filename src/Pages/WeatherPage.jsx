@@ -1,6 +1,6 @@
 import axios from "axios";
 import DashboardLayout from "../Layouts/DashboardLayout";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { APP_ID } from "../AppId";
 import { Line } from "react-chartjs-2";
 import {
@@ -15,6 +15,9 @@ import {
 } from "chart.js";
 import { toast } from "sonner";
 import { BeatLoader } from "react-spinners";
+import Button from "../Components/Button";
+import { handleGeneratePDF } from "../Utilities/ReactToPDF";
+import { TiWeatherPartlySunny } from "react-icons/ti";
 
 ChartJS.register(
   LineElement,
@@ -36,6 +39,8 @@ export default function WeatherPage() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const componentRef = useRef(null);
+
   const SearchWeather = async () => {
     setLoading(true);
     try {
@@ -47,8 +52,6 @@ export default function WeatherPage() {
           .get(`/forecast?q=${search}&units=metric&APPID=${APP_ID}`)
           .then((result) => {
             setForecast(result.data);
-            console.log(result.data);
-
             setShow(true);
             setLoading(false);
           })
@@ -100,6 +103,10 @@ export default function WeatherPage() {
     },
   };
 
+  const downloadPDF = () => {
+    handleGeneratePDF(componentRef, `Weather trends of ${search}`);
+  };
+
   return (
     <DashboardLayout>
       {loading && (
@@ -118,16 +125,11 @@ export default function WeatherPage() {
               className="border p-2 rounded-2xl w-40 sm:w-60 mr-2"
               placeholder="Enter city"
             />
-            <button
-              onClick={SearchWeather}
-              className="border rounded-2xl transition-colors duration-500 w-32 h-10 bg-gray-200 hover:bg-white"
-            >
-              Search
-            </button>
+            <Button ButtonName="Search" handleButton={SearchWeather} />
           </div>
         </div>
 
-        {show && (
+        {show ? (
           <div className="flex flex-col justify-center items-center">
             <h1 className="mt-5 text-xl font-bold">
               Weather Trends of {forecast.city.name}
@@ -160,10 +162,24 @@ export default function WeatherPage() {
               </div>
             </div>
 
+            <div className="flex items-center p-10">
+              <Button ButtonName="Download" handleButton={downloadPDF} />
+            </div>
+
             {/* Display chart */}
-            <div className="weather-chart w-[450px] sm:w-[500px] sm:h-[600px] md:w-[700px] md:h-[600px] lg:w-[850px] lg:h-[650px] xl:w-[1000px] xl:h-[700px] ">
+            <div
+              ref={componentRef}
+              className="weather-chart w-[450px] sm:w-[500px] sm:h-[600px] md:w-[700px] md:h-[600px] lg:w-[850px] lg:h-[650px] xl:w-[1000px] xl:h-[700px] "
+            >
               <Line data={chartData} options={chartOptions} />
             </div>
+          </div>
+        ) : (
+          <div className="flex flex-col justify-center items-center w-full h-[500px] text-gray-500">
+            <TiWeatherPartlySunny className="w-24 h-24" />
+            <p className="mt-4 text-lg text-center">
+              You can search the weather here!
+            </p>
           </div>
         )}
       </div>
