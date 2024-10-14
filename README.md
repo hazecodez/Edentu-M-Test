@@ -26,5 +26,5 @@ This project is a responsive dashboard that integrates data from JSONPlaceholder
 
 ## Demo Video
 
-You can watch the demo video [here](public/assets/demo.mp4).
+You can watch the demo video [here](public/assets/demo.gif).
 
